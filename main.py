@@ -1,7 +1,7 @@
 from typing import Optional
 from pydantic import BaseModel
 from fastapi import FastAPI
-from infer import inference
+from infer import infer
 
 app = FastAPI()
 
@@ -22,5 +22,5 @@ class InferData(BaseModel):
 
 @app.post("/infer")
 def post_infer(body: InferData):
-    result = inference(body.query, 'eventlibrary')
+    result = infer(body.query, 'eventlibrary')
     return {"result": result}
