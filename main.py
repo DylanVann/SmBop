@@ -22,12 +22,12 @@ def datetime_handler(x):
 
 
 class InferData(BaseModel):
-    query: str
+    text: str
 
 
 @app.post("/slack")
-def post_infer(body: InferData, text: str = ""):
-    inferredSql = infer(body.query, 'eventlibrary')
+def post_infer(body: InferData):
+    inferredSql = infer(body.text, 'eventlibrary')
     conn = psycopg2.connect(
         database="event_library",
         user="postgres",
@@ -40,7 +40,7 @@ def post_infer(body: InferData, text: str = ""):
     cur.execute(inferredSql)
     jsonResult = json.dumps(cur.fetchall(), default=datetime_handler, indent=2)
     print('-----------------------------------------------')
-    print(text)
+    print(body.text)
     print('-----------------------------------------------')
     conn.close()
     return {"result": inferredSql, "data": jsonResult}
