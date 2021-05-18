@@ -48,13 +48,13 @@ def post_slack(text: str = Form(...)):
     jsonResult = json.dumps(cur.fetchall(), default=datetime_handler, indent=2)
     conn.close()
 
-    resultMarkdown = f'''**Question:**
+    resultMarkdown = f'''*Question:*
 `{text}`
 
-**Inferred SQL**:
+*Inferred SQL*:
 `{inferredSql}`
 
-**Result:**
+*Result:*
 ```{jsonResult}```'''
 
     return {
