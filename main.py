@@ -20,18 +20,6 @@ def datetime_handler(x):
     raise TypeError("Unknown type")
 
 
-class InferData(BaseModel):
-    text: str
-
-
-# @app.post("/slack")
-# async def post_slack(text: str = Form(...)):
-#     print('-----------------------------------------------')
-#     print('text', text)
-#     print('-----------------------------------------------')
-#     return text
-
-
 @app.post("/slack")
 def post_slack(text: str = Form(...)):
     inferredSql = infer(text, 'eventlibrary')
@@ -72,6 +60,3 @@ def post_slack(text: str = Form(...)):
             }
         ]
     }
-    # return
-    # return result
-    # return jsonResult
