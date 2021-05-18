@@ -5,7 +5,7 @@
 # import psycopg2
 # from psycopg2.extras import RealDictCursor
 from pydantic import BaseModel
-from fastapi import FastAPI, Request
+from fastapi import FastAPI, Request, Form
 import datetime
 
 app = FastAPI()
@@ -27,8 +27,8 @@ class InferData(BaseModel):
 
 
 @app.post("/slack")
-async def post_slack(request: Request):
-    text = request.form['text']
+async def post_slack(text: str = Form(...)):
+    # text = request.form['text']
     print('-----------------------------------------------')
     print('text', text)
     print('-----------------------------------------------')
