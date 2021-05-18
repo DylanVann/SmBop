@@ -1,7 +1,7 @@
 from typing import Optional
 from typing import Dict, Any
 from pydantic import BaseModel
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from infer import infer
 import json
 import psycopg2
@@ -27,21 +27,29 @@ class InferData(BaseModel):
 
 
 @app.post("/slack")
-def post_infer(data: Dict[Any, Any] = None):
-    print('-----------------------------------------------')
-    print('data', data)
-    print('-----------------------------------------------')
-    inferredSql = infer(data.text, 'eventlibrary')
-    conn = psycopg2.connect(
-        database="event_library",
-        user="postgres",
-        password="HHn7zyuiTjXzA7Peg9mA3oJjGrWfpCmv",
-        host="event-library-3241.codnnlrpojpl.us-east-1.rds.amazonaws.com",
-        port="5432",
-        options=f'-c search_path=app_public'
-    )
-    cur = conn.cursor(cursor_factory=RealDictCursor)
-    cur.execute(inferredSql)
-    jsonResult = json.dumps(cur.fetchall(), default=datetime_handler, indent=2)
-    conn.close()
-    return {"result": inferredSql, "data": jsonResult}
+async def post_slack(request: Request):
+    text = request.query_params['text']
+    # print('-----------------------------------------------')
+    # print('data', data)
+    # print('-----------------------------------------------')
+    return text
+
+# @app.post("/slack")
+# def post_infer(data: Dict[Any, Any] = None):
+# print('-----------------------------------------------')
+# print('data', data)
+# print('-----------------------------------------------')
+# inferredSql = infer(data.text, 'eventlibrary')
+# conn = psycopg2.connect(
+#     database="event_library",
+#     user="postgres",
+#     password="HHn7zyuiTjXzA7Peg9mA3oJjGrWfpCmv",
+#     host="event-library-3241.codnnlrpojpl.us-east-1.rds.amazonaws.com",
+#     port="5432",
+#     options=f'-c search_path=app_public'
+# )
+# cur = conn.cursor(cursor_factory=RealDictCursor)
+# cur.execute(inferredSql)
+# jsonResult = json.dumps(cur.fetchall(), default=datetime_handler, indent=2)
+# conn.close()
+# return {"result": inferredSql, "data": jsonResult}
