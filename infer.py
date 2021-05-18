@@ -29,6 +29,7 @@ overrides = {
         "dataset_path": "dataset/database",
     }
 }
+
 predictor = Predictor.from_path(
     "model.tar.gz", cuda_device=0, overrides=overrides
 )
@@ -40,7 +41,7 @@ instance_0 = predictor._dataset_reader.text_to_instance(
 predictor._dataset_reader.apply_token_indexers(instance_0)
 
 
-def inference(question, db_id):
+def infer(question, db_id):
     instance = predictor._dataset_reader.text_to_instance(
         utterance=question, db_id=db_id,
     )
@@ -50,16 +51,3 @@ def inference(question, db_id):
             [instance, instance_0]
         )
         return out[0]["sql_list"]
-
-
-# print(inference("What is the most used event source?", "eventlibrary"))
-#
-# print(inference("What is the name of the most used event source?", "eventlibrary"))
-#
-# print(inference("What is the id event 'Test Event Name'?", "eventlibrary"))
-#
-# print(inference("What user was created first?", "eventlibrary"))
-#
-# print(inference("What is the name of the first user?", "eventlibrary"))
-#
-# print(inference("What is the name of the most active user?", "eventlibrary"))
