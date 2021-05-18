@@ -41,7 +41,7 @@ def post_slack(text: str = Form(...)):
                     "type": "section",
                     "text": {
                         "type": "mrkdwn",
-                        "text": f'**Could not interpret:** "{text}"'
+                        "text": f'*Could not interpret:* "{text}"'
                     }
                 }
             ]
