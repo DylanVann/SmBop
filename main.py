@@ -35,6 +35,17 @@ def post_slack(text: str = Form(...)):
         
         {errorString}
         '''
+        return {
+            "blocks": [
+                {
+                    "type": "section",
+                    "text": {
+                        "type": "mrkdwn",
+                        "text": f'**Could not interpret:** "{text}"'
+                    }
+                }
+            ]
+        }
     finally:
         conn.close()
 
