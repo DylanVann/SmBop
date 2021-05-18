@@ -1,4 +1,5 @@
 from typing import Optional
+from typing import Dict, Any
 from pydantic import BaseModel
 from fastapi import FastAPI
 from infer import infer
@@ -26,12 +27,11 @@ class InferData(BaseModel):
 
 
 @app.post("/slack")
-def post_infer(body: BaseModel):
+def post_infer(data: Dict[Any, Any] = None):
     print('-----------------------------------------------')
-    print(body)
-    print(body.text)
+    print('data', data)
     print('-----------------------------------------------')
-    inferredSql = infer(body.text, 'eventlibrary')
+    inferredSql = infer(data.text, 'eventlibrary')
     conn = psycopg2.connect(
         database="event_library",
         user="postgres",
