@@ -44,9 +44,13 @@ def post_slack(text: str = Form(...)):
         options=f'-c search_path=app_public'
     )
     cur = conn.cursor(cursor_factory=RealDictCursor)
-    cur.execute(inferredSql)
-    jsonResult = json.dumps(cur.fetchall(), default=datetime_handler, indent=2)
-    conn.close()
+    try:
+        cur.execute(inferredSql)
+        jsonResult = json.dumps(cur.fetchall(), default=datetime_handler, indent=2)
+    except:
+        jsonResult = "No json for you."
+    finally:
+        conn.close()
 
     resultMarkdown = f'''*Question:*
 `{text}`
