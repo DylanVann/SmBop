@@ -25,7 +25,7 @@ class InferData(BaseModel):
     query: str
 
 
-@app.post("/infer")
+@app.post("/slack")
 def post_infer(body: InferData, text: str = ""):
     inferredSql = infer(body.query, 'eventlibrary')
     conn = psycopg2.connect(
