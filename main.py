@@ -47,7 +47,9 @@ def post_slack(text: str = Form(...)):
     cur.execute(inferredSql)
     jsonResult = json.dumps(cur.fetchall(), default=datetime_handler, indent=2)
     conn.close()
-    result = f'''**Question:**
+
+    // ---------------------------------------------------
+    resultMarkdown = f'''**Question:**
 `{text}`
 
 **Inferred SQL**:
@@ -55,5 +57,19 @@ def post_slack(text: str = Form(...)):
 
 **Result:**
 ```{jsonResult}```'''
-    return result
+    // ---------------------------------------------------
+
+    return {
+        "blocks": [
+            {
+                "type": "section",
+                "text": {
+                    "type": "mrkdwn",
+                    "text": resultMarkdown
+                }
+            }
+        ]
+    }
+    # return
+    # return result
     # return jsonResult
