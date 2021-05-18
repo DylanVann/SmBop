@@ -26,12 +26,17 @@ class InferData(BaseModel):
 @app.post("/infer")
 def post_infer(body: InferData):
     inferredSql = infer(body.query, 'eventlibrary')
-    con = psycopg2.connect(database="event_library", user="postgres", password="HHn7zyuiTjXzA7Peg9mA3oJjGrWfpCmv",
-                           host="event-library-3241.codnnlrpojpl.us-east-1.rds.amazonaws.com", port="5432",
-                           search_path="app_public")
-    cur = con.cursor(cursor_factory=RealDictCursor)
+    conn = psycopg2.connect(
+        database="event_library",
+        user="postgres",
+        password="HHn7zyuiTjXzA7Peg9mA3oJjGrWfpCmv",
+        host="event-library-3241.codnnlrpojpl.us-east-1.rds.amazonaws.com",
+        port="5432",
+        options=f'-c search_path=app_public'
+    )
+    cur = conn.cursor(cursor_factory=RealDictCursor)
     cur.execute(inferredSql)
     jsonResult = json.dumps(cur.fetchall(), indent=2)
     print(jsonResult)
-    con.close()
+    conn.close()
     return {"result": inferredSql, "data": jsonResult}
