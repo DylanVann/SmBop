@@ -26,7 +26,11 @@ class InferData(BaseModel):
 
 
 @app.post("/slack")
-def post_infer(body: InferData):
+def post_infer(body: BaseModel):
+    print('-----------------------------------------------')
+    print(body)
+    print(body.text)
+    print('-----------------------------------------------')
     inferredSql = infer(body.text, 'eventlibrary')
     conn = psycopg2.connect(
         database="event_library",
@@ -39,8 +43,5 @@ def post_infer(body: InferData):
     cur = conn.cursor(cursor_factory=RealDictCursor)
     cur.execute(inferredSql)
     jsonResult = json.dumps(cur.fetchall(), default=datetime_handler, indent=2)
-    print('-----------------------------------------------')
-    print(body.text)
-    print('-----------------------------------------------')
     conn.close()
     return {"result": inferredSql, "data": jsonResult}
