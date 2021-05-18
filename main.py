@@ -5,6 +5,7 @@ from infer import infer
 import json
 import psycopg2
 from psycopg2.extras import RealDictCursor
+import datetime
 
 app = FastAPI()
 
@@ -17,6 +18,12 @@ def read_root():
 @app.get("/items/{item_id}")
 def read_item(item_id: int, q: Optional[str] = None):
     return {"item_id": item_id, "q": q}
+
+
+def datetime_handler(x):
+    if isinstance(x, datetime.datetime):
+        return x.isoformat()
+    raise TypeError("Unknown type")
 
 
 class InferData(BaseModel):
@@ -36,7 +43,7 @@ def post_infer(body: InferData):
     )
     cur = conn.cursor(cursor_factory=RealDictCursor)
     cur.execute(inferredSql)
-    jsonResult = json.dumps(cur.fetchall(), indent=2)
+    jsonResult = json.dumps(cur.fetchall(), default=datetime_handler, indent=2)
     print(jsonResult)
     conn.close()
     return {"result": inferredSql, "data": jsonResult}
