@@ -10,23 +10,24 @@ import nltk
 
 import numpy as np
 
-#These DB take an extra hour to proccess.
-LONG_DB =  ['wta_1',
- 'car_1',
- 'chinook_1',
- 'wine_1',
- 'soccer_1',
- 'sakila_1',
- 'baseball_1',
- 'college_2',
- 'flight_4',
- 'store_1',
- 'flight_2',
- 'world_1',
- 'formula_1',
- 'bike_1',
- 'csu_1',
- 'inn_1']
+# These DB take an extra hour to proccess.
+LONG_DB = ['wta_1',
+           'car_1',
+           'chinook_1',
+           'wine_1',
+           'soccer_1',
+           'sakila_1',
+           'baseball_1',
+           'college_2',
+           'flight_4',
+           'store_1',
+           'flight_2',
+           'world_1',
+           'formula_1',
+           'bike_1',
+           'csu_1',
+           'inn_1']
+
 
 def clamp(value, abs_max):
     value = max(-abs_max, value)
@@ -97,15 +98,15 @@ PUNKS = set(a for a in string.punctuation)
 class EncPreproc:
     # def __init__(self) -> None:
     def __init__(
-        self,
-        tables_file,
-        dataset_path,
-        include_table_name_in_column,
-        fix_issue_16_primary_keys,
-        qq_max_dist,
-        cc_max_dist,
-        tt_max_dist,
-        use_longdb,
+            self,
+            tables_file,
+            dataset_path,
+            include_table_name_in_column,
+            fix_issue_16_primary_keys,
+            qq_max_dist,
+            cc_max_dist,
+            tt_max_dist,
+            use_longdb,
     ):
         self._tables_file = tables_file
         self._dataset_path = dataset_path
@@ -123,7 +124,6 @@ class EncPreproc:
         else:
             self.filter_longdb = lambda x: True
 
-        
         def add_relation(name):
             self.relation_ids[name] = len(self.relation_ids)
 
@@ -183,7 +183,7 @@ class EncPreproc:
             sqlite_path = Path(self._dataset_path) / db_id / f"{db_id}.sqlite"
             source: sqlite3.Connection
             with sqlite3.connect(sqlite_path) as source:
-                dest = sqlite3.connect(":memory:")
+                dest = sqlite3.connect(":memory:", check_same_thread=False)
                 dest.row_factory = sqlite3.Row
                 source.backup(dest)
             schema.connection = dest
@@ -200,7 +200,7 @@ class EncPreproc:
         return self.preprocess_item(item, "train")
 
     def compute_relations(
-        self, desc, enc_length, q_enc_length, c_enc_length, c_boundaries, t_boundaries
+            self, desc, enc_length, q_enc_length, c_enc_length, c_boundaries, t_boundaries
     ):
         sc_link = desc.get("sc_link", {"q_col_match": {}, "q_tab_match": {}})
         cv_link = desc.get("cv_link", {"num_date_match": {}, "cell_match": {}})
@@ -270,8 +270,8 @@ class EncPreproc:
                         if desc["foreign_keys"].get(str(col2)) == col1:
                             set_relation("cc_foreign_key_backward")
                         if (
-                            desc["column_to_table"][str(col1)]
-                            == desc["column_to_table"][str(col2)]
+                                desc["column_to_table"][str(col1)]
+                                == desc["column_to_table"][str(col2)]
                         ):
                             set_relation("cc_table_match")
 
@@ -432,7 +432,7 @@ class EncPreproc:
         n = 5
         while n > 0:
             for i in range(len(question) - n + 1):
-                n_gram_list = question[i : i + n]
+                n_gram_list = question[i: i + n]
                 n_gram = " ".join(n_gram_list)
                 if len(n_gram.strip()) == 0:
                     continue
@@ -588,7 +588,6 @@ class EncPreproc:
 
         return foreign_key_map
 
-    
     def compute_cell_value_linking(self, tokens, schema):
         def isnumber(word):
             try:
@@ -657,11 +656,11 @@ class EncPreproc:
 
     @classmethod
     def preprocess_schema_uncached(
-        self,
-        schema,
-        tokenize_func,
-        include_table_name_in_column,
-        fix_issue_16_primary_keys,
+            self,
+            schema,
+            tokenize_func,
+            include_table_name_in_column,
+            fix_issue_16_primary_keys,
     ):
 
         r = PreprocessedSchema()
