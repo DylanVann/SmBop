@@ -23,7 +23,7 @@ def datetime_handler(x):
 @app.post("/slack")
 def post_slack(text: str = Form(...)):
     inferredSql = infer(text, 'eventlibrary')
-    conn = sqlite3.connect('dataset/database/eventlibrary/eventlibrary.sqlite')
+    conn = sqlite3.connect('dataset/database/eventlibrary/eventlibrary.sqlite', check_same_thread=False)
     cursor = conn.cursor()
     cursor.execute(inferredSql)
     jsonResult = json.dumps(cursor.fetchall(), default=datetime_handler, indent=2)
