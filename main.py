@@ -1,11 +1,11 @@
 # from typing import Optional
-from typing import Dict, Any
-from pydantic import BaseModel
-from fastapi import FastAPI, Request
+# from typing import Dict, Any
 # from infer import infer
 # import json
 # import psycopg2
 # from psycopg2.extras import RealDictCursor
+from pydantic import BaseModel
+from fastapi import FastAPI, Request
 import datetime
 
 app = FastAPI()
@@ -27,11 +27,12 @@ class InferData(BaseModel):
 
 
 @app.post("/slack")
-async def post_slack(data: Any):
+async def post_slack(request: Request):
+    text = request.form['text']
     print('-----------------------------------------------')
-    print('data', data)
+    print('text', text)
     print('-----------------------------------------------')
-    return "HELLO"
+    return text
 
 # @app.post("/slack")
 # def post_infer(data: Dict[Any, Any] = None):
