@@ -23,11 +23,20 @@ def datetime_handler(x):
 @app.post("/slack")
 def post_slack(text: str = Form(...)):
     inferredSql = infer(text, 'eventlibrary')
+
     conn = sqlite3.connect('dataset/database/eventlibrary/eventlibrary.sqlite', check_same_thread=False)
-    cursor = conn.cursor()
-    cursor.execute(inferredSql)
-    jsonResult = json.dumps(cursor.fetchall(), default=datetime_handler, indent=2)
-    conn.close()
+    try:
+        cursor = conn.cursor()
+        cursor.execute(inferredSql)
+        jsonResult = json.dumps(cursor.fetchall(), default=datetime_handler, indent=2)
+    except sqlite3.OperationalError as e:
+        errorString = str(e)
+        jsonResult = f'''Query failed.
+        
+        {errorString}
+        '''
+    finally:
+        conn.close()
 
     resultMarkdown = f'''*Question:*
 `{text}`
