@@ -48,7 +48,6 @@ def post_slack(text: str = Form(...)):
     jsonResult = json.dumps(cur.fetchall(), default=datetime_handler, indent=2)
     conn.close()
 
-    // ---------------------------------------------------
     resultMarkdown = f'''**Question:**
 `{text}`
 
@@ -57,7 +56,6 @@ def post_slack(text: str = Form(...)):
 
 **Result:**
 ```{jsonResult}```'''
-    // ---------------------------------------------------
 
     return {
         "blocks": [
